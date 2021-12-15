@@ -1,0 +1,22 @@
+---
+- name: install
+  apt:
+    name:
+      - mariadb-server
+      - python-mysqldb # for mysql_db and mysql_user modules
+    state: present
+    update_cache: yes
+
+- name: ensure service is start
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+
+- name: change root password
+  mysql_user:
+    name: root
+    password: '{{ mysql_root_password }}'
+    host: 'localhost'
+    login_user: root
+    login_password: '{{ mysql_old_root_password }}'

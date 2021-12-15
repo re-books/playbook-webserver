@@ -1,0 +1,9 @@
+---
+
+- hosts: web
+  become: true
+
+  roles:
+    - mariadb
+    - nginx
+    - php
