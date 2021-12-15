@@ -3,6 +3,13 @@
 - hosts: web
   become: true
 
+  pre_tasks:
+    - name: install commons
+      apt:
+        name:
+          - python3-dev
+        update_cache: yes
+
   roles:
     - mariadb
     - nginx

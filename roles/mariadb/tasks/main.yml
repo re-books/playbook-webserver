@@ -3,9 +3,14 @@
   apt:
     name:
       - mariadb-server
-      - python-mysqldb # for mysql_db and mysql_user modules
+      - libmysqlclient-dev
     state: present
     update_cache: yes
+
+- name: install python client
+  pip:
+    name: mysqlclient
+    state: present
 
 - name: ensure service is start
   service:

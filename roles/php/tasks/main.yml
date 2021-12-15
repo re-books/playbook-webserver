@@ -1,17 +1,9 @@
 ---
-- name: download apt key
-  get_url:
-    url: https://packages.sury.org/php/apt.gpg
-    dest: /tmp/php.gpg
-
-- name: install apt key
-  apt_key:
-    file: /tmp/php.gpg
-    state: present
-
 - name: apt repository
   apt_repository:
-    repo: deb https://packages.sury.org/php/ buster main
+    repo: ppa:ondrej/php
+    state: present
+    update_cache: yes
 
 - name: install
   apt:
