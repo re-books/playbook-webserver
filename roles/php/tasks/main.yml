@@ -25,3 +25,8 @@
     name: "{{ php_packages | list }}"
     state: present
     install_recommends: no
+
+- name: change default version
+  alternatives:
+    name: php
+    path: /usr/bin/php{{ php_version }}
