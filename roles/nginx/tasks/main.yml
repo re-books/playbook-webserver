@@ -8,7 +8,13 @@
     state: present
     update_cache: yes
 
-- name: create web user
+- name: create wwwuser group
+  group:
+    name: "{{ www_group }}"
+    state: present
+    system: true
+
+- name: create wwwuser user
   user:
     name: "{{ www_user }}"
     group: "{{ www_group }}"
