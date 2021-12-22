@@ -22,3 +22,19 @@
   alternatives:
     name: php
     path: /usr/bin/php{{ php_version }}
+
+- name: define wwwuser as php-fpm's user
+  replace:
+    path: "/etc/php/{{ php_version }}/fpm/pool.d/www.conf"
+    regexp: '{{ item.from }}'
+    replace: "{{ item.to }}"
+  with_items:
+    - {from: '^user = (.+)$', to: 'user = {{ www_user }}'}
+    - {from: '^group = (.+)$', to: 'group = {{ www_group }}'}
+    - {from: '^listen.owner = (.+)$', to: 'listen.owner = {{ www_user }}'}
+    - {from: '^listen.group = (.+)$', to: 'listen.group = {{ www_group }}'}
+
+- name: restart php-fpm
+  service:
+    name: php{{ php_version }}-fpm
+    state: restarted
