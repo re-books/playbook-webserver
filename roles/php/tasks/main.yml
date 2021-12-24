@@ -48,6 +48,14 @@
     - {from: '^listen.owner = (.+)$', to: 'listen.owner = {{ www_user }}'}
     - {from: '^listen.group = (.+)$', to: 'listen.group = {{ www_group }}'}
 
+- name: add permission to wwwuser to reload php-fpm
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^{{ www_user }} ALL=NOPASSWD: /usr/sbin/service php{{ php_version }}-fpm reload$'
+    line: '{{ www_user }} ALL=NOPASSWD: /usr/sbin/service php{{ php_version }}-fpm reload'
+    validate: 'visudo -cf %s'
+
 - name: restart php-fpm
   service:
     name: php{{ php_version }}-fpm
