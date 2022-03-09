@@ -13,3 +13,4 @@
   roles:
     - wwwuser
     - docker
+    - traefik

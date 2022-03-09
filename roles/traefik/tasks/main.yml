@@ -1,0 +1,54 @@
+---
+- name: create directory
+  file:
+    path: "{{ www_home }}/traefik"
+    state: directory
+    owner: "{{ www_user }}"
+    group: "{{ www_group }}"
+
+- name: check if acme file exists
+  stat:
+    path: "{{ www_home }}/traefik/acme.json"
+  register: acme_file
+
+- name: create acme file if does not exists
+  file:
+    path: "{{ www_home }}/traefik/acme.json"
+    state: touch
+    mode: 0600
+    owner: "{{ www_user }}"
+    group: "{{ www_group }}"
+  when: acme_file.stat.exists == False
+
+- name: add config file
+  template:
+    src: traefik.yml.j2
+    dest: "{{ www_home }}/traefik/traefik.yml"
+    mode: 0600
+    owner: "{{ www_user }}"
+    group: "{{ www_group }}"
+
+- name: create network
+  docker_network:
+    name: web
+
+- name: create container
+  docker_container:
+    name: traefik
+    image: traefik:2.4
+    restart_policy: unless-stopped
+    recreate: true
+    networks:
+      - name: web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "{{ www_home }}/traefik/traefik.yml:/etc/traefik/traefik.yml"
+      - "{{ www_home }}/traefik/acme.json:/acme.json"
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.dashboard.rule: Host(`{{ traefik_dashboard_host }}`)
+      traefik.http.routers.dashboard.entryPoints: http
+      traefik.http.routers.dashboard.service: api@internal
