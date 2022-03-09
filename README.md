@@ -5,8 +5,9 @@ This playbook installs webserver (Nginx, Mariadb, PHP)
 ## Usage
 
 ```shell
-cp hosts.example.ini hosts.ini # change config values
-touch deploy.sub # paste your ssh pub key for www_user
+# copy config file then change values
+cp hosts.example.ini hosts.ini 
 
-ansible-playbook -i hosts.ini playbook.yml # run playbook
+# run playbook
+ansible-playbook -i hosts.ini playbook.yml --extra-vars "ssh_key=id.pub"
 ```

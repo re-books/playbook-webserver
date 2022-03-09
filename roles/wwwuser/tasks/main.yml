@@ -1,0 +1,30 @@
+---
+- name: create wwwuser group
+  group:
+    name: "{{ www_group }}"
+    state: present
+    system: true
+
+- name: create wwwuser user
+  user:
+    name: "{{ www_user }}"
+    group: "{{ www_group }}"
+    comment: "Web user"
+    shell: /bin/bash
+    home: "{{ www_home }}"
+    system: true
+    state: present
+
+- name: authorize ssh key to wwwuser
+  authorized_key:
+    user: "{{ www_user }}"
+    state: present
+    key: "{{ lookup('file', ssh_key) }}"
+  when: ssh_key is defined
+
+- name: create app's directory
+  file:
+    path: "{{ www_home }}/apps"
+    state: directory
+    owner: "{{ www_user }}"
+    group: "{{ www_group }}"

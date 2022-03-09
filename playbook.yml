@@ -11,6 +11,5 @@
         update_cache: yes
 
   roles:
-    - mariadb
-    - nginx
-    - php
+    - wwwuser
+    - docker

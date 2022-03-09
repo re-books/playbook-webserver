@@ -1,0 +1,45 @@
+---
+- name: install
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - software-properties-common
+    state: present
+    update_cache: yes
+
+- name: add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: add Docker Repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/{{ ansible_system | lower }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+    state: present
+
+- name: update apt and install docker-ce
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: latest
+    update_cache: yes
+
+- name: add the Python client for Docker
+  pip:
+    name: docker-py
+
+- name: install docker-compose
+  get_url:
+    url : https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: 'u+x,g+x'
+    group: docker
+
+- name: add admin to docker group
+  user:
+    name: "{{ www_user }}"
+    groups: docker
+    append: yes
