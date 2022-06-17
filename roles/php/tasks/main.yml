@@ -1,0 +1,53 @@
+- name: add gpg key (debian)
+  apt_key:
+    url: "https://packages.sury.org/php/apt.gpg"
+    state: present
+  when: ansible_distribution == 'Debian'
+
+- name: add repository (debian)
+  apt_repository:
+    repo: "deb https://packages.sury.org/php/ {{ ansible_distribution_release }} main"
+    state: present
+    update_cache: yes
+  when: ansible_distribution == 'Debian'
+
+- name: add repository (ubuntu)
+  apt_repository:
+    repo: ppa:ondrej/php
+    state: present
+    update_cache: yes
+  when: ansible_distribution == 'Ubuntu'
+
+- name: install
+  apt:
+    name: "php{{ php_version }}-fpm"
+    state: present
+    update_cache: yes
+    install_recommends: no
+
+- name: install packages
+  apt:
+    name: "{{ php_packages | list }}"
+    state: present
+    install_recommends: no
+
+- name: change default version
+  alternatives:
+    name: php
+    path: /usr/bin/php{{ php_version }}
+
+- name: define wwwuser as php-fpm's user
+  replace:
+    path: "/etc/php/{{ php_version }}/fpm/pool.d/www.conf"
+    regexp: '{{ item.from }}'
+    replace: "{{ item.to }}"
+  with_items:
+    - {from: '^user = (.+)$', to: 'user = {{ www_user }}'}
+    - {from: '^group = (.+)$', to: 'group = {{ www_group }}'}
+    - {from: '^listen.owner = (.+)$', to: 'listen.owner = {{ www_user }}'}
+    - {from: '^listen.group = (.+)$', to: 'listen.group = {{ www_group }}'}
+
+- name: restart php-fpm
+  service:
+    name: php{{ php_version }}-fpm
+    state: restarted

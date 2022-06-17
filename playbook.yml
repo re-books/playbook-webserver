@@ -11,6 +11,7 @@
         update_cache: yes
 
   roles:
+    - nginx
     - wwwuser
-    - docker
-    - traefik
+    - php
+    - mariadb

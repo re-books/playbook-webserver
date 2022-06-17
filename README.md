@@ -1,13 +1,16 @@
 # Playbook webserver
 
-This playbook installs webserver (Nginx, Mariadb, PHP)
+This playbook installs webserver (Nginx, Letsencrypt, Mariadb & PHP)
 
 ## Usage
 
-```shell
-# copy config file then change values
-cp hosts.example.ini hosts.ini 
+Config
+```bash
+cp hosts.example.ini hosts.ini # copy config file then change values
+touch deploy.pub # paste your ssh pub key for www_user
+```
 
-# run playbook
-ansible-playbook -i hosts.ini playbook.yml --extra-vars "ssh_key=id.pub"
+Then run playbook
+```bash
+ansible-playbook -i hosts.ini playbook.yml
 ```

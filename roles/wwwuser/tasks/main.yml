@@ -1,4 +1,3 @@
----
 - name: create wwwuser group
   group:
     name: "{{ www_group }}"
@@ -19,7 +18,7 @@
   authorized_key:
     user: "{{ www_user }}"
     state: present
-    key: "{{ lookup('file', ssh_key) }}"
+    key: "{{ lookup('file', deploy.pub) }}"
   when: ssh_key is defined
 
 - name: create app's directory
@@ -28,3 +27,11 @@
     state: directory
     owner: "{{ www_user }}"
     group: "{{ www_group }}"
+
+- name: add permission to wwwuser to reload php-fpm
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^{{ www_user }} ALL=NOPASSWD: /usr/sbin/service php{{ php_version }}-fpm reload$'
+    line: '{{ www_user }} ALL=NOPASSWD: /usr/sbin/service php{{ php_version }}-fpm reload'
+    validate: 'visudo -cf %s'
