@@ -7,5 +7,5 @@ This playbook installs webserver (Nginx, Letsencrypt, Mariadb & PHP)
 Go to your server then run :
 
 ```bash
-curl https://github.com/re-books/playbook-webserver/blob/master/setup.sh | sudo bash
+curl https://raw.githubusercontent.com/re-books/playbook-webserver/master/setup.sh | sudo bash
 ```
