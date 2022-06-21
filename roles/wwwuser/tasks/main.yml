@@ -14,13 +14,6 @@
     system: true
     state: present
 
-- name: authorize ssh key to wwwuser
-  authorized_key:
-    user: "{{ www_user }}"
-    state: present
-    key: "{{ lookup('file', deploy.pub) }}"
-  when: ssh_key is defined
-
 - name: create app's directory
   file:
     path: "{{ www_home }}/apps"

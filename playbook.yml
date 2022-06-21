@@ -1,6 +1,7 @@
 ---
 
-- hosts: web
+- hosts: localhost
+  connection: local
   become: true
 
   pre_tasks:
