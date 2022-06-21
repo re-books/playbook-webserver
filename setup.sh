@@ -10,7 +10,7 @@ echo "$(date +%s | sha256sum | base64 | head -c 32 ; echo)" > mysqlrootpassword
 
 chmod 600 mysqlrootpassword
 
-ansible-playbook -i hosts.ini playbook.yml \
+ansible-playbook playbook.yml \
   -e www_user=web \
   -e www_group=web \
   -e www_home=/home/web \
